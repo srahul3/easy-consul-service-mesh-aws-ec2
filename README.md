@@ -5,18 +5,18 @@ Easy way to make consul up and running using few CLI steps. Includes the API Gat
 ```sh
 #!/bin/bash
 
-#_________________________AWS SECURITY GRP________________________________
+#_________________________AWS SECURITY GRP CONFIGURATION________________________________
 
-sgr-02324bbec1b78f1c2 IPv4  Custom TCP  TCP 22000 0.0.0.0/0 sidecar port
-sgr-07ed440080d88a9bb IPv4  Custom TCP  TCP 8300  0.0.0.0/0 –
-sgr-033c5f595a8c23166 IPv4  Custom TCP  TCP 8500  0.0.0.0/0 UI
-sgr-0988f22f2c6f8ace4 IPv4  HTTP  TCP 80  0.0.0.0/0 –
-sgr-0f5f711202005320b IPv4  Custom TCP  TCP 19000 0.0.0.0/0 envoy
-sgr-08b751c1d4ca534ca IPv4  Custom TCP  TCP 8503  0.0.0.0/0 gRPC
-sgr-0112a105f1372138d IPv4  Custom TCP  TCP 8443  0.0.0.0/0 api-gw
-sgr-090ac2eac9a8c4d74 IPv4  SSH TCP 22  0.0.0.0/0 –
-sgr-0bca70b5669243401 IPv4  Custom TCP  TCP 8301  0.0.0.0/0 –
-sgr-0f6f26041d1c13431 IPv4  Custom TCP  TCP 8302  0.0.0.0/0 –
+IPv4  Custom TCP  TCP 22000 0.0.0.0/0 sidecar port
+IPv4  Custom TCP  TCP 8300  0.0.0.0/0 –
+IPv4  Custom TCP  TCP 8500  0.0.0.0/0 UI
+IPv4  HTTP  TCP 80  0.0.0.0/0 –
+IPv4  Custom TCP  TCP 19000 0.0.0.0/0 envoy
+IPv4  Custom TCP  TCP 8503  0.0.0.0/0 gRPC
+IPv4  Custom TCP  TCP 8443  0.0.0.0/0 api-gw
+IPv4  SSH TCP 22  0.0.0.0/0 –
+IPv4  Custom TCP  TCP 8301  0.0.0.0/0 –
+IPv4  Custom TCP  TCP 8302  0.0.0.0/0 –
 
 #______________________________SEVER AGENT___________________________
 
@@ -263,7 +263,7 @@ sudo mv envoy-v1.27.2-linux-amd64/bin/envoy /usr/bin/envoy && \
 sudo rm -rf envoy-v1.27.2-linux-amd64.tar.xz envoy-v1.27.2-linux-amd64
 
 
-consul connect envoy -sidecar-for api -admin-bind 127.0.0.1:19001 -token a234daab-bfd1-cbd3-1f83-abf24e094b39 &
+consul connect envoy -sidecar-for api -admin-bind 127.0.0.1:19001 -token a234daab-bfd1-cbd3-1f83-abf24e094b39 >envoy.log 2>&1 &
 
 
 #----------------------------REGISTERING THE API GATEWAY NEW---------------------
@@ -396,7 +396,7 @@ consul config write my-http-route.hcl
 Use intentions UI to allow the traffic from api-gw to api
 
 # start API GW
-sudo consul connect envoy -gateway api -register -service my-api-gateway -admin-bind 0.0.0.0:19000 -token a234daab-bfd1-cbd3-1f83-abf24e094b39 -- --log-level debug
+sudo consul connect envoy -gateway api -register -service my-api-gateway -admin-bind 0.0.0.0:19000 -token a234daab-bfd1-cbd3-1f83-abf24e094b39 -- --log-level debug >envoy.log 2>&1 &
 # API gw Envoy config page
 http://ec2-52-32-143-55.us-west-2.compute.amazonaws.com:19000/
 
@@ -415,5 +415,4 @@ http://ec2-52-32-143-55.us-west-2.compute.amazonaws.com:8443/api
   "body": "Hello from api!",
   "code": 200
 }
-
 ```
