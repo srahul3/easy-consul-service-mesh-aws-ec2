@@ -4,7 +4,7 @@
 Easy step by step guide to setup the **Consul Service Mesh** on AWS EC2 instance(VM). For demo purpose we will also setup the folowing workload
 - `Consul API Gateway` Read more [here](https://developer.hashicorp.com/consul/docs/connect/gateways/api-gateway).
 - `API Service` A JSON API service, which makes upstream call to the `Payment` service and returns the JSON response.
-- `Payment Service`. A JSON API service which return JSON resonse. 
+- `Payment Service`. A JSON API service which return JSON response. 
 
 ## Topology
 
