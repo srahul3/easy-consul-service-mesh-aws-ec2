@@ -36,6 +36,10 @@ sudo consul tls cert create -server -dc dc1
 [ec2-user@ip-10-0-17-253 certs]$ ls
 consul-agent-ca-key.pem  consul-agent-ca.pem  dc1-server-consul-0-key.pem  dc1-server-consul-0.pem
 
+# generating time based UUID which can be used as root secret-id/token
+[ec2-user@ip-10-0-17-253 ~]$ uuidgen
+a234daab-bfd1-cbd3-1f83-abf24e094b39
+
 cd /etc/consul.d/ && sudo rm ./consul.hcl
 sudo tee ./consul.hcl<<EOF
 datacenter = "dc1"
