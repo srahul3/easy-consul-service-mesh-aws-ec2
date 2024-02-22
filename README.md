@@ -22,11 +22,15 @@ G --> H[Payment Service]
 
 User calls the public address of API Gateway running on port 8443, the API API Gateway is consfigured with HTTP Routes which routes the `http://<public-ip-or-dns>:8443/api` to `API Service` and later `API Service` calls `Payment Service`.
 
-```sh
-#!/bin/bash
+### Prerequisite
+- VPC : A dedicated VPC with public subnets configured with IGW.
+- Security Group : A dedicated EC2 security group with below inbound rules
+- EC2 Instance :
+  - One instances(Amazon Linux, Above mentioned VPC and Security group, Public IP). I named the instances as `consul-server`
+  - Three instances(Ubuntu, Above mentioned VPC and Security group, Public IP).. I named the instances as follows `consul-api`, `consul-payment`, `consul-api-gw`
 
-#_________________________AWS SECURITY GRP CONFIGURATION________________________________
-
+Inbound port rules
+```
 IPv4  Custom TCP  TCP 22000 0.0.0.0/0 sidecar port
 IPv4  Custom TCP  TCP 8300  0.0.0.0/0 –
 IPv4  Custom TCP  TCP 8500  0.0.0.0/0 UI
@@ -37,9 +41,12 @@ IPv4  Custom TCP  TCP 8443  0.0.0.0/0 api-gw
 IPv4  SSH TCP 22  0.0.0.0/0 –
 IPv4  Custom TCP  TCP 8301  0.0.0.0/0 –
 IPv4  Custom TCP  TCP 8302  0.0.0.0/0 –
+```
 
-#______________________________SEVER AGENT___________________________
+#### Setup Consul Server
+For this demo we will ignore the redundancy and high-availablity and work with one server instance only.
 
+```sh
 #Create EC2 instance with RSA, amazon linux, public-api, a dedicated VPC with IGW, Pub/Pvt key, security group
 chmod 400 "ec2-keys-consul-hardway.pem"
 ssh -i "ec2-keys-consul-hardway.pem" ec2-user@ec2-54-245-13-56.us-west-2.compute.amazonaws.com
@@ -112,11 +119,10 @@ export CONSUL_HTTP_TOKEN=a234daab-bfd1-cbd3-1f83-abf24e094b39
 
 #consul acl token create -description "client-hardway agent token" \
 #  -node-identity "client-hardway:dc1"
+```
 
-
-
-#----------------------------PAYMENTS SERVICE---------------------
-
+#### Payment Service
+```sh
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && \
 sudo apt update && sudo apt install consul
@@ -296,7 +302,11 @@ Created symlink /etc/systemd/system/multi-user.target.wants/payment-sidecar.serv
 
 sudo systemctl start payment-sidecar
 
-#______________________________API SERVICE___________________________
+```
+
+#### API Service
+```sh
+
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && \
 sudo apt update && sudo apt install consul
@@ -507,13 +517,12 @@ ubuntu@ip-10-0-25-28:~$ curl localhost:9090
   "code": 200
 }
 
-# ----------------------------INTENTIONS EXPECTATION---------------------
-ubuntu@ip-10-0-16-210:~$ consul intention list
-ID  Source          Action  Destination  Precedence
-    api             allow   payment      9
-    my-api-gateway  allow   api          9
 
-#----------------------------REGISTERING THE API GATEWAY---------------------
+```
+
+#### Consul API Gateway
+```sh
+
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && \
 sudo apt update && sudo apt install consul
@@ -711,9 +720,18 @@ http://ec2-52-32-143-55.us-west-2.compute.amazonaws.com:8443/api
   },
   "code": 200
 }
+```
 
+#### Intentions expectations
+```sh
+ubuntu@ip-10-0-16-210:~$ consul intention list
+ID  Source          Action  Destination  Precedence
+    api             allow   payment      9
+    my-api-gateway  allow   api          9
+```
 
-#----------------------------USEFUL LINKS---------------------
+#### Useful commands
+```sh
 curl -H "Authorization: Bearer a234daab-bfd1-cbd3-1f83-abf24e094b39" http://localhost:8500/v1/operator/autopilot/health | jq
 curl -H "Authorization: Bearer a234daab-bfd1-cbd3-1f83-abf24e094b39" http://localhost:8500/v1/agent/metrics | jq
 
