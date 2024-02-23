@@ -1,6 +1,7 @@
 # Consul Service Mesh up-and-running
 
-![alt text](https://skillicons.dev/icons?i=aws)
+![alt text](https://skillicons.dev/icons?i=aws) <img src="https://github.com/srahul3/easy-consul-service-mesh-aws-ec2/assets/17195847/993748ef-06c6-461b-b514-87126772694a" width="40" height="40"> <img src="https://github.com/srahul3/easy-consul-service-mesh-aws-ec2/assets/17195847/13fa5e4d-f7dd-4140-9c76-3b8a84d997dd" width="40" height="40"> 
+
 Easy step by step guide to setup the **Consul Service Mesh** on AWS EC2 instance(VM). For demo purpose we will also setup the folowing workload
 - `Consul API Gateway` Read more [here](https://developer.hashicorp.com/consul/docs/connect/gateways/api-gateway).
 - `API Service` A JSON API service, which makes upstream call to the `Payment` service and returns the JSON response.
