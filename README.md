@@ -60,6 +60,10 @@ cd /etc/consul.d/ && sudo mkdir ./certs && cd ./certs
 sudo consul tls ca create
 sudo consul tls cert create -server -dc dc1
 
+# generating root token/secret id
+sudo uuidgen
+a234daab-bfd1-cbd3-1f83-abf24e094b39
+
 [ec2-user@ip-10-0-17-253 certs]$ ls
 consul-agent-ca-key.pem  consul-agent-ca.pem  dc1-server-consul-0-key.pem  dc1-server-consul-0.pem
 
