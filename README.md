@@ -509,15 +509,37 @@ sudo systemctl start api-sidecar
 ubuntu@ip-10-0-25-28:~$ curl localhost:9090
 {
   "name": "api",
-  "uri": "/",
+  "uri": "/api",
   "type": "HTTP",
   "ip_addresses": [
-    "10.0.25.28"
+    "10.0.23.207"
   ],
-  "start_time": "2024-02-17T09:09:59.839627",
-  "end_time": "2024-02-17T09:09:59.839860",
-  "duration": "232.885µs",
+  "start_time": "2024-02-22T10:19:00.339344",
+  "end_time": "2024-02-22T10:19:00.345556",
+  "duration": "6.212343ms",
   "body": "Hello from api!",
+  "upstream_calls": {
+    "http://localhost:6001": {
+      "name": "payment",
+      "uri": "http://localhost:6001",
+      "type": "HTTP",
+      "ip_addresses": [
+        "10.0.20.173"
+      ],
+      "start_time": "2024-02-22T10:19:00.342999",
+      "end_time": "2024-02-22T10:19:00.343131",
+      "duration": "131.644µs",
+      "headers": {
+        "Content-Length": "268",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Date": "Thu, 22 Feb 2024 10:19:00 GMT",
+        "Server": "envoy",
+        "X-Envoy-Upstream-Service-Time": "3"
+      },
+      "body": "Hello from payment!",
+      "code": 200
+    }
+  },
   "code": 200
 }
 
